@@ -1,0 +1,74 @@
+{
+  "name": "material-kit-2-react",
+  "version": "2.1.0",
+  "private": true,
+  "author": "Creative Tim",
+  "license": "See license in https://www.creative-tim.com/license",
+  "description": "React version of Material Kit 2 by Creative Tim",
+  "dependencies": {
+    "@crossmarkio/sdk": "^0.4.0",
+    "@emotion/cache": "11.10.7",
+    "@emotion/react": "11.10.6",
+    "@emotion/styled": "11.10.6",
+    "@gemwallet/api": "^3.1.1",
+    "@mui/icons-material": "5.11.16",
+    "@mui/material": "5.12.0",
+    "@mui/styled-engine": "5.12.0",
+    "@testing-library/jest-dom": "5.16.5",
+    "@testing-library/react": "14.0.0",
+    "@testing-library/user-event": "14.4.3",
+    "chroma-js": "2.4.2",
+    "flatpickr": "4.6.13",
+    "prop-types": "15.8.1",
+    "react": "18.2.0",
+    "react-copy-to-clipboard": "5.1.0",
+    "react-countup": "6.4.2",
+    "react-dom": "18.2.0",
+    "react-flatpickr": "3.10.13",
+    "react-router-dom": "6.10.0",
+    "react-scripts": "5.0.1",
+    "react-syntax-highlighter": "15.5.0",
+    "tailwindcss": "^3.4.17",
+    "web-vitals": "3.3.1",
+    "xrpl": "^2.14.0",
+    "xumm-sdk": "^1.11.1"
+  },
+  "scripts": {
+    "dev": "vite",
+    "build": "vite build",
+    "lint": "eslint ./src",
+    "prettify": "prettier --write ."
+  },
+  "eslintConfig": {
+    "extends": [
+      "react-app",
+      "react-app/jest"
+    ]
+  },
+  "browserslist": {
+    "production": [
+      ">0.2%",
+      "not dead",
+      "not op_mini all"
+    ],
+    "development": [
+      "last 1 chrome version",
+      "last 1 firefox version",
+      "last 1 safari version"
+    ]
+  },
+  "devDependencies": {
+    "@vitejs/plugin-react": "^4.3.4",
+    "ajv": "^7.2.4",
+    "eslint": "^8.57.1",
+    "eslint-config-prettier": "8.8.0",
+    "eslint-config-react-app": "^7.0.1",
+    "eslint-plugin-import": "2.27.5",
+    "eslint-plugin-jsx-a11y": "6.7.1",
+    "eslint-plugin-prettier": "4.2.1",
+    "eslint-plugin-react": "7.32.2",
+    "eslint-plugin-react-hooks": "4.6.0",
+    "prettier": "2.8.7",
+    "vite": "^6.0.7"
+  }
+}

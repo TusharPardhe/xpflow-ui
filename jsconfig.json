@@ -1,0 +1,14 @@
+{
+  "compilerOptions": {
+    "baseUrl": "src",
+    "paths": {
+      "@": ["src/*"],
+      "assets": ["src/assets/*"],
+      "layouts": ["src/layouts/*"],
+      "routes": ["src/routes/*"],
+      "examples": ["src/examples/*"],
+      "components": ["src/components/*"],
+      "xrpl-connect": ["src/xrpl-connect/*"],
+    }
+  }
+}
