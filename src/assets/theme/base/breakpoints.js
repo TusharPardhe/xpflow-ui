@@ -1,6 +1,6 @@
 /**
 =========================================================
-* Material Kit 2 React - v2.1.0
+* XPayFlow - v2.1.0
 =========================================================
 
 * Product Page: https://www.creative-tim.com/product/material-kit-react
@@ -14,9 +14,9 @@ Coded by www.creative-tim.com
 */
 
 /**
- * The base breakpoints for the Material Kit 2 React.
+ * The base breakpoints for the XPayFlow.
  * You can add new breakpoints using this file.
- * You can customized the breakpoints for the entire Material Kit 2 React using thie file.
+ * You can customized the breakpoints for the entire XPayFlow using thie file.
  */
 
 export default {

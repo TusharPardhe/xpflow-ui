@@ -7,11 +7,11 @@ import { Routes, Route, Navigate, useLocation } from "react-router-dom";
 import { ThemeProvider } from "@mui/material/styles";
 import CssBaseline from "@mui/material/CssBaseline";
 
-// Material Kit 2 React themes
+// XPayFlow themes
 import theme from "assets/theme";
 import Presentation from "layouts/pages/presentation";
 
-// Material Kit 2 React routes
+// XPayFlow routes
 import routes from "routes";
 import DefaultNavbar from "examples/Navbars/DefaultNavbar";
 import Contact from "pages/LandingPages/Author/sections/Contact";

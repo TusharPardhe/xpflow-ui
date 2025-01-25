@@ -1,6 +1,6 @@
 export const getQrCode = async (apiEndpoint, setQrCode, setJumpLink, isMobile, setXrpAddress) => {
   try {
-    const response = await fetch(`${apiEndpoint}/xaman/create-payload`, {
+    const response = await fetch(`${apiEndpoint}/wallets/xaman/createpayload`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -25,7 +25,7 @@ export const getQrCode = async (apiEndpoint, setQrCode, setJumpLink, isMobile, s
       if (responseObj.signed) {
         try {
           const payloadResponse = await fetch(
-            `${apiEndpoint}/xaman/get-payload/${responseObj.payload_uuidv4}`
+            `${apiEndpoint}/wallets/xaman/getpayload?payloadId=${responseObj.payload_uuidv4}`
           );
           const payloadJson = await payloadResponse.json();
 
@@ -43,6 +43,7 @@ export const getQrCode = async (apiEndpoint, setQrCode, setJumpLink, isMobile, s
           }
         } catch (error) {
           console.error("Error processing payload:", error);
+          throw error;
         }
       }
     };
@@ -60,7 +61,7 @@ export const signTransactionXaman = async (
   setJumpLink
 ) => {
   try {
-    const response = await fetch(`${apiEndpoint}/wallets/xaman/create-payload`, {
+    const response = await fetch(`${apiEndpoint}/wallets/xaman/createpayload`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ transaction }),
@@ -85,7 +86,7 @@ export const signTransactionXaman = async (
           try {
             if (responseObj.signed) {
               const payloadResponse = await fetch(
-                `${apiEndpoint}/wallets/xaman/get-payload/${responseObj.payload_uuidv4}`
+                `${apiEndpoint}/wallets/xaman/getpayload?payloadId=${responseObj.payload_uuidv4}`
               );
               const signedTxJson = await payloadResponse.json();
               resolve(signedTxJson);

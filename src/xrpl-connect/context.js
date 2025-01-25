@@ -77,6 +77,7 @@ export const WalletProvider = ({ children, apiEndpoint }) => {
         }
       } catch (err) {
         setError(err instanceof Error ? err.message : "Failed to connect wallet");
+        throw err;
       } finally {
         setIsLoading(false);
       }

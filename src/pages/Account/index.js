@@ -1,33 +1,30 @@
 import React, { useEffect, useState } from "react";
-
-// @mui material components
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Icon from "@mui/material/Icon";
 import Modal from "@mui/material/Modal";
 import Divider from "@mui/material/Divider";
-
-// Material Kit 2 React components
 import MKBox from "components/MKBox";
 import MKTypography from "components/MKTypography";
 import MKButton from "components/MKButton";
 import MKInput from "components/MKInput";
-
-// Images
 import bgImage from "assets/images/bg-coworking.jpeg";
 import { useWallet } from "xrpl-connect/context";
 import { useNavigate } from "react-router-dom";
 import MKLoader from "components/MKLoader";
+import { xrpToDrops } from "xrpl";
 
 function Account() {
   const navigate = useNavigate();
-  const { xrpAddress, disconnect, apiEndpoint } = useWallet();
+  const { xrpAddress, disconnect, apiEndpoint, signTransaction } = useWallet();
   const [modalOpen, setModalOpen] = useState(false);
+  const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [donationAmount, setDonationAmount] = useState("");
   const [accountData, setAccountData] = useState(null);
   const [isLoading, setIsLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isDonating, setIsDonating] = useState(false);
 
   useEffect(() => {
     if (xrpAddress) fetchAccountData();
@@ -60,7 +57,8 @@ function Account() {
 
       setAccountData({
         ...details,
-        fundDistribution: donations.fundDistribution || [],
+        fundDistribution: donations.funds || [],
+        donationAmount: donations.donation || 0,
       });
     } catch (err) {
       setError(err.message);
@@ -69,10 +67,61 @@ function Account() {
     }
   };
 
-  const handleDonateNow = () => {
-    console.log("Donating amount:", donationAmount);
-    setModalOpen(false);
-    setDonationAmount("");
+  const handleDonateNow = async () => {
+    setIsDonating(true);
+    try {
+      const transaction = {
+        TransactionType: "Payment",
+        Account: xrpAddress,
+        Destination: import.meta.env.VITE_XRPL_DONATION_ADDRESS,
+        Amount: xrpToDrops(donationAmount),
+      };
+
+      const signedTx = await signTransaction(transaction);
+      let transactionHash = null;
+
+      if ("result" in signedTx && signedTx.result?.hash) {
+        transactionHash = signedTx.result.hash;
+      } else if ("response" in signedTx && signedTx.response?.data?.meta.isSuccess) {
+        transactionHash = signedTx.response.data.resp.result.hash;
+      } else if ("payload" in signedTx && signedTx.payload?.response?.txid) {
+        transactionHash = signedTx.payload.response.txid;
+      } else {
+        throw new Error("Failed to sign transaction");
+      }
+
+      if (!transactionHash) {
+        throw new Error("Failed to sign transaction");
+      }
+
+      const response = await fetch(`${apiEndpoint}/donation/add`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          donation: {
+            address: xrpAddress,
+            amount: donationAmount,
+            transactionId: transactionHash,
+            status: "confirmed",
+          },
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to add donation. Please contact support if this issue persists.");
+      }
+
+      setModalOpen(false);
+      setDonationAmount("");
+      setSuccessModalOpen(true);
+      await fetchAccountData();
+    } catch (error) {
+      console.error("Error processing payload:", error);
+    } finally {
+      setIsDonating(false);
+    }
   };
 
   const handleDisconnect = () => {
@@ -94,6 +143,11 @@ function Account() {
     }
 
     setDonationAmount(numericValue);
+  };
+
+  const handleDonateButtonClick = () => {
+    setDonationAmount("");
+    setModalOpen(true);
   };
 
   if (isLoading) {
@@ -197,7 +251,7 @@ function Account() {
                   mt={2}
                   sx={{ fontSize: { xs: "1.75rem", md: "2.25rem" } }}
                 >
-                  {accountData.availableBalance}
+                  {accountData.availableBalance} XRP
                 </MKTypography>
                 <MKButton
                   variant="gradient"
@@ -207,7 +261,7 @@ function Account() {
                     mt: 4,
                     py: { xs: 1.5, md: 2 },
                   }}
-                  onClick={() => setModalOpen(true)}
+                  onClick={handleDonateButtonClick}
                 >
                   Donate
                 </MKButton>
@@ -235,66 +289,86 @@ function Account() {
               >
                 Fund Distribution
               </MKTypography>
-              <Grid
-                container
-                sx={{
-                  width: "100%",
-                  margin: 0,
-                  justifyContent: { xs: "center", lg: "flex-start" },
-                }}
-                gap={3}
-              >
-                {accountData.fundDistribution.map((fund) => (
-                  <Grid
-                    item
-                    xs={12}
-                    sm={6}
-                    md={3}
-                    key={fund.name}
-                    sx={{
-                      maxWidth: { xs: "100%", sm: "50%", md: "33.333%" },
-                    }}
-                    className="fund-card"
-                  >
-                    <Card>
-                      <MKBox
-                        variant="gradient"
-                        bgColor="info"
-                        coloredShadow="info"
-                        borderRadius="xl"
-                        p={{ xs: 2, md: 3 }}
-                        textAlign="center"
-                      >
-                        <MKTypography
-                          variant="h3"
-                          color="white"
-                          mt={1}
-                          sx={{ fontSize: { xs: "1.75rem", md: "2.25rem" } }}
+              {accountData.donationAmount === 0 ? (
+                <Grid item xs={12}>
+                  <Card>
+                    <MKBox p={4} textAlign="center">
+                      <Icon sx={{ mb: 2 }} color="info" fontSize="large">
+                        volunteer_activism
+                      </Icon>
+                      <MKTypography variant="h4" mb={2}>
+                        Make Your First Donation Today
+                      </MKTypography>
+                      <MKTypography variant="body1" color="text" mb={3}>
+                        Your contribution can make a real difference. We distribute your donation
+                        across education, healthcare, and community initiatives to create lasting
+                        impact.
+                      </MKTypography>
+                    </MKBox>
+                  </Card>
+                </Grid>
+              ) : (
+                <Grid
+                  container
+                  sx={{
+                    width: "100%",
+                    margin: 0,
+                    justifyContent: { xs: "center", lg: "flex-start" },
+                  }}
+                  gap={3}
+                >
+                  {accountData.fundDistribution.map((fund) => (
+                    <Grid
+                      item
+                      xs={12}
+                      sm={6}
+                      md={3}
+                      key={fund.name}
+                      sx={{
+                        maxWidth: { xs: "100%", sm: "50%", md: "33.333%" },
+                      }}
+                      className="fund-card"
+                    >
+                      <Card>
+                        <MKBox
+                          variant="gradient"
+                          bgColor="info"
+                          coloredShadow="info"
+                          borderRadius="xl"
+                          p={{ xs: 2, md: 3 }}
+                          textAlign="center"
                         >
-                          {fund.percentage}%
-                        </MKTypography>
-                        <MKTypography
-                          variant="h5"
-                          color="white"
-                          mt={1}
-                          sx={{ fontSize: { xs: "1.25rem", md: "1.5rem" } }}
-                        >
-                          {fund.amount}
-                        </MKTypography>
-                      </MKBox>
-                      <MKBox p={{ xs: 2, md: 3 }} textAlign="center">
-                        <MKTypography
-                          variant="h6"
-                          fontWeight="bold"
-                          sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }}
-                        >
-                          {fund.name}
-                        </MKTypography>
-                      </MKBox>
-                    </Card>
-                  </Grid>
-                ))}
-              </Grid>
+                          <MKTypography
+                            variant="h5"
+                            color="white"
+                            mt={1}
+                            sx={{ fontSize: { xs: "1.25rem", md: "1.5rem" } }}
+                          >
+                            {((accountData.donationAmount * fund.percentage) / 100).toFixed(2)} XRP
+                          </MKTypography>
+                          <MKTypography
+                            variant="body1"
+                            color="white"
+                            mt={1}
+                            sx={{ fontSize: { xs: "0.875rem", md: "1rem" }, opacity: 0.8 }}
+                          >
+                            {fund.percentage}% of donation
+                          </MKTypography>
+                        </MKBox>
+                        <MKBox p={{ xs: 2, md: 3 }} textAlign="center">
+                          <MKTypography
+                            variant="h6"
+                            fontWeight="bold"
+                            sx={{ fontSize: { xs: "1rem", md: "1.25rem" } }}
+                          >
+                            {fund.name}
+                          </MKTypography>
+                        </MKBox>
+                      </Card>
+                    </Grid>
+                  ))}
+                </Grid>
+              )}
             </Grid>
           </Grid>
         </Grid>
@@ -364,15 +438,75 @@ function Account() {
               color="info"
               fullWidth
               onClick={handleDonateNow}
-              disabled={donationAmount === "" || donationAmount <= 0}
+              disabled={donationAmount === "" || donationAmount <= 0 || isDonating}
               sx={{
                 mt: 2,
                 py: { xs: 1.5, md: 2 },
               }}
             >
-              Donate Now
+              {isDonating ? "Processing..." : "Donate Now"}
             </MKButton>
           </MKBox>
+        </Card>
+      </Modal>
+
+      {/* Success Modal */}
+      <Modal
+        open={successModalOpen}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          p: 2,
+        }}
+      >
+        <Card
+          sx={{
+            maxWidth: "400px",
+            width: "100%",
+            p: { xs: 2, md: 3 },
+            backgroundColor: ({ palette: { white }, functions: { rgba } }) => rgba(white.main, 0.8),
+            backdropFilter: "saturate(200%) blur(30px)",
+            m: 2,
+            textAlign: "center",
+            alignItems: "center",
+          }}
+        >
+          <MKTypography
+            variant="h4"
+            fontWeight="medium"
+            sx={{ fontSize: { xs: "1.5rem", md: "2rem" }, mb: 2 }}
+          >
+            Donation Successful!
+          </MKTypography>
+          <Icon
+            fontSize="large"
+            color="success"
+            sx={{
+              mb: 2,
+            }}
+          >
+            check_circle
+          </Icon>
+          <MKTypography
+            variant="body1"
+            color="text"
+            mb={4}
+            sx={{ fontSize: { xs: "0.875rem", md: "1rem" } }}
+          >
+            Thank you for your contribution. Your donation has been processed successfully.
+          </MKTypography>
+          <MKButton
+            variant="gradient"
+            color="success"
+            sx={{
+              py: { xs: 1.5, md: 2 },
+              px: 6,
+            }}
+            onClick={() => setSuccessModalOpen(false)}
+          >
+            Done
+          </MKButton>
         </Card>
       </Modal>
     </>
