@@ -17,7 +17,9 @@ import { xrpToDrops } from "xrpl";
 
 function Account() {
   const navigate = useNavigate();
-  const { xrpAddress, disconnect, apiEndpoint, signTransaction } = useWallet();
+  const { xrpAddress, disconnect, apiEndpoint, signTransaction, isMobile, qrCode, jumpLink } =
+    useWallet();
+  const [qrModalOpen, setQrModalOpen] = useState(false);
   const [modalOpen, setModalOpen] = useState(false);
   const [successModalOpen, setSuccessModalOpen] = useState(false);
   const [donationAmount, setDonationAmount] = useState("");
@@ -77,6 +79,12 @@ function Account() {
         Amount: xrpToDrops(donationAmount),
       };
 
+      const walletType = localStorage.getItem("xrpl-wallet");
+      if (walletType === "xaman") {
+        setModalOpen(false);
+        setQrModalOpen(true);
+      }
+
       const signedTx = await signTransaction(transaction);
       let transactionHash = null;
 
@@ -121,6 +129,7 @@ function Account() {
       console.error("Error processing payload:", error);
     } finally {
       setIsDonating(false);
+      setQrModalOpen(false);
     }
   };
 
@@ -446,6 +455,68 @@ function Account() {
             >
               {isDonating ? "Processing..." : "Donate Now"}
             </MKButton>
+          </MKBox>
+        </Card>
+      </Modal>
+
+      {/* Xaman QR Modal */}
+      <Modal
+        open={qrModalOpen}
+        sx={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "center",
+          p: 2,
+        }}
+      >
+        <Card
+          sx={{
+            maxWidth: "400px",
+            width: "100%",
+            p: { xs: 2, md: 3 },
+            backgroundColor: ({ palette: { white }, functions: { rgba } }) => rgba(white.main, 0.8),
+            backdropFilter: "saturate(200%) blur(30px)",
+            m: 2,
+            textAlign: "center",
+          }}
+        >
+          <MKBox display="flex" alignItems="center" justifyContent="space-between" mb={3}>
+            <MKTypography variant="h6" component="h2">
+              Sign with Xaman
+            </MKTypography>
+            <Icon
+              sx={{
+                cursor: "pointer",
+                "&:hover": { opacity: 0.7 },
+              }}
+              onClick={() => setQrModalOpen(false)}
+            >
+              close
+            </Icon>
+          </MKBox>
+
+          <MKBox display="flex" flexDirection="column" alignItems="center">
+            {qrCode ? (
+              <img src={qrCode} alt="QR Code" style={{ marginBottom: "1rem", maxWidth: "100%" }} />
+            ) : (
+              <MKTypography>Loading QR Code...</MKTypography>
+            )}
+
+            <MKTypography variant="body2" color="text" mb={3} textAlign="center">
+              Scan this QR code with your Xaman wallet to sign the transaction.
+            </MKTypography>
+
+            {isMobile && jumpLink && (
+              <MKButton
+                variant="gradient"
+                color="info"
+                onClick={() => window.open(jumpLink, "_blank")}
+                fullWidth
+                sx={{ mt: 2 }}
+              >
+                Open Xaman App
+              </MKButton>
+            )}
           </MKBox>
         </Card>
       </Modal>

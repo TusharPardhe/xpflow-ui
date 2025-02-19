@@ -22,6 +22,10 @@ export function WalletConnector({ onSuccess, onError }) {
     severity: "error",
   });
 
+  const handleOpenWalletModal = () => setWalletModalOpen(true);
+  const handleCloseWalletModal = () => setWalletModalOpen(false);
+  const handleCloseQrModal = () => setQrModalOpen(false);
+
   useEffect(() => {
     if (error) {
       setNotification({
@@ -32,9 +36,17 @@ export function WalletConnector({ onSuccess, onError }) {
     }
   }, [error]);
 
-  const handleOpenWalletModal = () => setWalletModalOpen(true);
-  const handleCloseWalletModal = () => setWalletModalOpen(false);
-  const handleCloseQrModal = () => setQrModalOpen(false);
+  useEffect(() => {
+    if (xrpAddress) {
+      handleCloseWalletModal();
+      handleCloseQrModal();
+      setNotification({
+        open: true,
+        message: "Successfully connected wallet",
+        severity: "success",
+      });
+    }
+  }, [xrpAddress]);
 
   const handleNotificationClose = () => {
     setNotification({ ...notification, open: false });
@@ -53,13 +65,6 @@ export function WalletConnector({ onSuccess, onError }) {
       }
       await connectWallet(walletType);
       onSuccess?.(xrpAddress);
-      handleCloseWalletModal();
-      setQrModalOpen(false);
-      setNotification({
-        open: true,
-        message: "Successfully connected wallet",
-        severity: "success",
-      });
     } catch (err) {
       const errorMessage = err instanceof Error ? err.message : "Failed to connect wallet";
       onError?.(errorMessage);
