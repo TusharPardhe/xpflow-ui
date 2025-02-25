@@ -12,7 +12,7 @@ const root = ReactDOMClient.createRoot(container);
 
 root.render(
   <BrowserRouter>
-    <WalletProvider apiEndpoint="http://localhost:3000/api">
+    <WalletProvider apiEndpoint={import.meta.env.VITE_BACKEND_API_ENDPOINT}>
       <App />
     </WalletProvider>
   </BrowserRouter>
