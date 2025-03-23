@@ -1,32 +1,14 @@
-/*
-=========================================================
-* XPayFlow - v2.1.0
-=========================================================
-
-* Product Page: https://www.creative-tim.com/product/material-kit-react
-* Copyright 2023 Creative Tim (https://www.creative-tim.com)
-
-Coded by www.creative-tim.com
-
- =========================================================
-
-* The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
-*/
-
-// @mui material components
 import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 
-// XPayFlow components
 import MKBox from "components/MKBox";
+import MKTypography from "components/MKTypography";
 
-// XPayFlow examples
 import RotatingCard from "examples/Cards/RotatingCard";
 import RotatingCardFront from "examples/Cards/RotatingCard/RotatingCardFront";
 import RotatingCardBack from "examples/Cards/RotatingCard/RotatingCardBack";
 import DefaultInfoCard from "examples/Cards/InfoCards/DefaultInfoCard";
 
-// Images
 import bgFront from "assets/images/rotating-card-bg-front.jpeg";
 import bgBack from "assets/images/rotating-card-bg-back.jpeg";
 
@@ -39,25 +21,14 @@ function Information() {
             <RotatingCard>
               <RotatingCardFront
                 image={bgFront}
-                icon="touch_app"
-                title={
-                  <>
-                    Feel the
-                    <br />
-                    Material Kit
-                  </>
-                }
-                description="All the MUI components that you need in a development have been re-design with the new look."
+                icon="account_balance_wallet"
+                title="XPAYFLOW"
+                description="Blockchain-based funding and donation platform with complete transparency and efficiency in fund distribution."
               />
               <RotatingCardBack
                 image={bgBack}
-                title="Discover More"
-                description="You will save a lot of time going from prototyping to full-functional code because all elements are implemented."
-                action={{
-                  type: "internal",
-                  route: "/sections/page-sections/page-headers",
-                  label: "start with header",
-                }}
+                title="How It Works"
+                description="Connect your wallet, select a fund, and watch your contribution automatically distribute to multiple wallets based on the project's allocation plan."
               />
             </RotatingCard>
           </Grid>
@@ -65,38 +36,88 @@ function Information() {
             <Grid container spacing={3}>
               <Grid item xs={12} md={6}>
                 <DefaultInfoCard
-                  icon="content_copy"
-                  title="Full Documentation"
-                  description="Built by developers for developers. Check the foundation and you will find
-                    everything inside our documentation."
+                  icon="account_balance_wallet"
+                  title="Connect Your Wallet"
+                  description="Securely connect your XRPL-compatible wallet to the XPAYFLOW platform."
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <DefaultInfoCard
-                  icon="flip_to_front"
-                  title="MUI Ready"
-                  description="The world's most popular react components library for building user interfaces."
+                  icon="add_shopping_cart"
+                  title="Donate hassle free"
+                  description="Support your community with faster and secure donation"
                 />
               </Grid>
             </Grid>
             <Grid container spacing={3} sx={{ mt: { xs: 0, md: 6 } }}>
               <Grid item xs={12} md={6}>
                 <DefaultInfoCard
-                  icon="price_change"
-                  title="Save Time & Money"
-                  description="Creating your design from scratch with dedicated designers can be very expensive. Start with our Design System."
+                  icon="attach_money"
+                  title="Automatic Distribution"
+                  description="Your contribution is automatically distributed to designated wallets based on the project holder's preset allocation."
                 />
               </Grid>
               <Grid item xs={12} md={6}>
                 <DefaultInfoCard
-                  icon="devices"
-                  title="Fully Responsive"
-                  description="Regardless of the screen size, the website content will naturally fit the given resolution."
+                  icon="toll"
+                  title="On-Chain Transparency"
+                  description="Track every transaction on-chain to see exactly where funds are going in real-time."
                 />
               </Grid>
             </Grid>
           </Grid>
         </Grid>
+
+        {/* Key Features Section */}
+        <MKBox mt={10}>
+          <Grid container spacing={3}>
+            <Grid item xs={12} textAlign="center" mb={4}>
+              <MKTypography variant="h3" fontWeight="bold">
+                Key Features
+              </MKTypography>
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <DefaultInfoCard
+                icon="verified"
+                title="Decentralized & Transparent"
+                description="All transactions are recorded on the XRPL for full accountability."
+                direction="center"
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <DefaultInfoCard
+                icon="category"
+                title="Versatile Funding"
+                description="Supports both charitable donations and private or public project funding."
+                direction="center"
+              />
+            </Grid>
+            <Grid item xs={12} md={4}>
+              <DefaultInfoCard
+                icon="security"
+                title="Secure & Efficient"
+                description="Eliminates intermediaries, ensuring funds reach their intended recipients without delays."
+                direction="center"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <DefaultInfoCard
+                icon="settings"
+                title="Project Holder Control"
+                description="Fund organizers determine allocations in advance, ensuring clarity for donors and participants."
+                direction="center"
+              />
+            </Grid>
+            <Grid item xs={12} md={6}>
+              <DefaultInfoCard
+                icon="track_changes"
+                title="Real-Time Tracking"
+                description="Users can view how contributions are distributed with blockchain-verified transparency."
+                direction="center"
+              />
+            </Grid>
+          </Grid>
+        </MKBox>
       </Container>
     </MKBox>
   );

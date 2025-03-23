@@ -1,29 +1,20 @@
 import { useState, useEffect } from "react";
 import { Link } from "react-router-dom";
 import PropTypes from "prop-types";
-
-// @mui material components
 import Container from "@mui/material/Container";
 import Icon from "@mui/material/Icon";
-
-// XPayFlow components
 import MKBox from "components/MKBox";
 import MKTypography from "components/MKTypography";
-import MKButton from "components/MKButton";
-
-// Base styles
 import breakpoints from "assets/theme/base/breakpoints";
 import { WalletConnector } from "xrpl-connect/index";
-// import { useWallet } from "xrpl-connect/dist/context";
 
-function DefaultNavbar({ brand, transparent, light, action, sticky, relative }) {
+function DefaultNavbar({ brandImage, transparent, light, sticky, relative }) {
   const [mobileNavbar, setMobileNavbar] = useState(false);
   const [mobileView, setMobileView] = useState(false);
 
   const openMobileNavbar = () => setMobileNavbar(!mobileNavbar);
 
   useEffect(() => {
-    // A function that sets the display state for the DefaultNavbarMobile.
     function displayMobileNavbar() {
       if (window.innerWidth < breakpoints.values.lg) {
         setMobileView(true);
@@ -42,7 +33,6 @@ function DefaultNavbar({ brand, transparent, light, action, sticky, relative }) 
 
   const navItems = [
     { name: "Home", path: "/" },
-    { name: "About", path: "/about" },
     { name: "Contact", path: "/contact" },
   ];
 
@@ -66,7 +56,7 @@ function DefaultNavbar({ brand, transparent, light, action, sticky, relative }) 
         })}
       >
         <MKBox display="flex" justifyContent="space-between" alignItems="center">
-          {/* Brand */}
+          {/* Brand Image */}
           <MKBox
             component={Link}
             to="/"
@@ -74,9 +64,13 @@ function DefaultNavbar({ brand, transparent, light, action, sticky, relative }) 
             py={transparent ? 1.5 : 0.75}
             pl={relative || transparent ? 0 : { xs: 0, lg: 1 }}
           >
-            <MKTypography variant="button" fontWeight="bold" color={light ? "white" : "dark"}>
-              {brand}
-            </MKTypography>
+            <MKBox
+              component="img"
+              src={brandImage}
+              alt="Brand Logo"
+              height="40px"
+              sx={{ objectFit: "contain" }}
+            />
           </MKBox>
 
           {/* Desktop Navigation */}
@@ -104,7 +98,7 @@ function DefaultNavbar({ brand, transparent, light, action, sticky, relative }) 
             ))}
           </MKBox>
 
-          {/* Action Button */}
+          {/* Wallet Connector */}
           <MKBox ml={{ xs: "auto", lg: 0 }}>
             <WalletConnector
               onSuccess={(address) => console.log(`Connected: ${address}`)}
@@ -168,39 +162,18 @@ function DefaultNavbar({ brand, transparent, light, action, sticky, relative }) 
 
 // Setting default values for the props
 DefaultNavbar.defaultProps = {
-  brand: "Your Brand",
+  brandImage: "/path-to-your-logo.png",
   transparent: false,
   light: false,
-  action: false,
   sticky: false,
   relative: false,
 };
 
 // Typechecking props
 DefaultNavbar.propTypes = {
-  brand: PropTypes.string,
+  brandImage: PropTypes.string,
   transparent: PropTypes.bool,
   light: PropTypes.bool,
-  action: PropTypes.oneOfType([
-    PropTypes.bool,
-    PropTypes.shape({
-      type: PropTypes.oneOf(["external", "internal"]).isRequired,
-      route: PropTypes.string.isRequired,
-      color: PropTypes.oneOf([
-        "primary",
-        "secondary",
-        "info",
-        "success",
-        "warning",
-        "error",
-        "dark",
-        "light",
-        "default",
-        "white",
-      ]),
-      label: PropTypes.string.isRequired,
-    }),
-  ]),
   sticky: PropTypes.bool,
   relative: PropTypes.bool,
 };

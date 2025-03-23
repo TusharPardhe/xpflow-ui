@@ -37,9 +37,8 @@ function Team() {
       variant="gradient"
       bgColor="dark"
       position="relative"
-      py={6}
-      px={{ xs: 2, lg: 0 }}
-      mx={-2}
+      p={6}
+      borderRadius="xl"
     >
       <Container>
         <Grid container>

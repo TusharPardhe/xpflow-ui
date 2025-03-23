@@ -43,22 +43,12 @@ export default function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <DefaultNavbar
-        routes={routes}
-        action={{
-          type: "external",
-          route: "https://www.creative-tim.com/product/material-kit-react",
-          color: "info",
-          label: "Connect Wallet",
-          brand: "",
-        }}
-        sticky
-      />
+      <DefaultNavbar sticky brand={"XPayFlow"} />
       <Routes>
         {getRoutes(routes)}
         <Route path="/" element={<Presentation />} />
         <Route path="/contact" element={<Contact />} />
-        <Route path="/about" element={<AboutUs />} />
+        {/* <Route path="/about" element={<AboutUs />} /> */}
         <Route path="/account" element={<Account />} />
         <Route path="*" element={<Navigate to="/" />} />
       </Routes>
