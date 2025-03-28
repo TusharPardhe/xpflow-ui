@@ -7,8 +7,9 @@ import MKBox from "components/MKBox";
 import MKTypography from "components/MKTypography";
 import breakpoints from "assets/theme/base/breakpoints";
 import { WalletConnector } from "xrpl-connect/index";
+import logoImage from "assets/images/xpayflow-transparentbg.png";
 
-function DefaultNavbar({ brandImage, transparent, light, sticky, relative }) {
+function DefaultNavbar({ transparent, light, sticky, relative }) {
   const [mobileNavbar, setMobileNavbar] = useState(false);
   const [mobileView, setMobileView] = useState(false);
 
@@ -37,13 +38,20 @@ function DefaultNavbar({ brandImage, transparent, light, sticky, relative }) {
   ];
 
   return (
-    <Container sx={sticky ? { position: "sticky", top: 0, zIndex: 10 } : null}>
+    <Container
+      maxWidth="lg"
+      disableGutters
+      sx={{
+        ...(sticky ? { position: "sticky", top: 0, zIndex: 10 } : {}),
+        px: { xs: 2, sm: 3, lg: 4 },
+      }}
+    >
       <MKBox
         py={1}
-        px={{ xs: 4, sm: transparent ? 2 : 3, lg: transparent ? 0 : 2 }}
+        px={{ xs: 2, sm: transparent ? 2 : 3, lg: transparent ? 0 : 2 }}
         my={relative ? 0 : 2}
-        mx={relative ? 0 : 3}
-        width={relative ? "100%" : "calc(100% - 48px)"}
+        mx={relative ? 0 : { xs: 0, sm: 3 }}
+        width={relative ? "100%" : { xs: "100%", lg: "calc(100% - 48px)" }}
         borderRadius="xl"
         shadow={transparent ? "none" : "md"}
         color={light ? "white" : "dark"}
@@ -53,28 +61,72 @@ function DefaultNavbar({ brandImage, transparent, light, sticky, relative }) {
         sx={({ palette: { transparent: transparentColor, white }, functions: { rgba } }) => ({
           backgroundColor: transparent ? transparentColor.main : rgba(white.main, 0.8),
           backdropFilter: transparent ? "none" : `saturate(200%) blur(30px)`,
+          overflow: "hidden",
         })}
       >
-        <MKBox display="flex" justifyContent="space-between" alignItems="center">
+        <MKBox
+          display="flex"
+          justifyContent="space-between"
+          alignItems="center"
+          sx={{
+            flexWrap: { xs: "wrap", lg: "nowrap" },
+            gap: { xs: 1, sm: 2 },
+          }}
+        >
           {/* Brand Image */}
           <MKBox
             component={Link}
             to="/"
             lineHeight={1}
             py={transparent ? 1.5 : 0.75}
-            pl={relative || transparent ? 0 : { xs: 0, lg: 1 }}
+            width={{ xs: "50%", sm: "auto" }}
+            sx={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: { xs: "flex-start", sm: "center" },
+            }}
           >
             <MKBox
               component="img"
-              src={brandImage}
+              src={logoImage}
               alt="Brand Logo"
               height="40px"
-              sx={{ objectFit: "contain" }}
+              width={{ xs: "120px", sm: "150px" }}
+              maxWidth="200px"
+              sx={{
+                objectFit: "contain",
+                display: "block",
+              }}
             />
           </MKBox>
 
+          {/* Mobile Menu Icon */}
+          <MKBox
+            display={{ xs: "inline-block", lg: "none" }}
+            lineHeight={0}
+            py={1.5}
+            color={transparent ? "white" : "inherit"}
+            sx={{
+              cursor: "pointer",
+              marginLeft: "auto",
+              order: 3,
+            }}
+            onClick={openMobileNavbar}
+          >
+            <Icon fontSize="default">{mobileNavbar ? "close" : "menu"}</Icon>
+          </MKBox>
+
           {/* Desktop Navigation */}
-          <MKBox color="inherit" display={{ xs: "none", lg: "flex" }} ml="auto">
+          <MKBox
+            color="inherit"
+            display={{ xs: "none", lg: "flex" }}
+            ml="auto"
+            sx={{
+              flexGrow: 1,
+              justifyContent: "flex-end",
+              alignItems: "center",
+            }}
+          >
             {navItems.map((item) => (
               <MKTypography
                 key={item.name}
@@ -99,24 +151,19 @@ function DefaultNavbar({ brandImage, transparent, light, sticky, relative }) {
           </MKBox>
 
           {/* Wallet Connector */}
-          <MKBox ml={{ xs: "auto", lg: 0 }}>
+          <MKBox
+            sx={{
+              order: { xs: 4, lg: 3 },
+              width: { xs: "100%", lg: "auto" },
+              mt: { xs: 1, lg: 0 },
+              display: "flex",
+              justifyContent: { xs: "center", lg: "flex-end" },
+            }}
+          >
             <WalletConnector
               onSuccess={(address) => console.log(`Connected: ${address}`)}
               onError={(error) => console.error(error)}
             />
-          </MKBox>
-
-          {/* Mobile Menu Icon */}
-          <MKBox
-            display={{ xs: "inline-block", lg: "none" }}
-            lineHeight={0}
-            py={1.5}
-            pl={1.5}
-            color={transparent ? "white" : "inherit"}
-            sx={{ cursor: "pointer" }}
-            onClick={openMobileNavbar}
-          >
-            <Icon fontSize="default">{mobileNavbar ? "close" : "menu"}</Icon>
           </MKBox>
         </MKBox>
 
@@ -129,6 +176,7 @@ function DefaultNavbar({ brandImage, transparent, light, sticky, relative }) {
             px={transparent ? 2 : 0}
             py={mobileNavbar ? 2 : 0}
             display={mobileNavbar ? "block" : "none"}
+            width="100%"
           >
             {navItems.map((item) => (
               <MKTypography
@@ -141,6 +189,7 @@ function DefaultNavbar({ brandImage, transparent, light, sticky, relative }) {
                 py={1.5}
                 px={2}
                 display="block"
+                textAlign="center"
                 sx={{
                   cursor: "pointer",
                   userSelect: "none",
@@ -162,7 +211,6 @@ function DefaultNavbar({ brandImage, transparent, light, sticky, relative }) {
 
 // Setting default values for the props
 DefaultNavbar.defaultProps = {
-  brandImage: "/path-to-your-logo.png",
   transparent: false,
   light: false,
   sticky: false,
@@ -171,7 +219,6 @@ DefaultNavbar.defaultProps = {
 
 // Typechecking props
 DefaultNavbar.propTypes = {
-  brandImage: PropTypes.string,
   transparent: PropTypes.bool,
   light: PropTypes.bool,
   sticky: PropTypes.bool,

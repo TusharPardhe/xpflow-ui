@@ -9,7 +9,7 @@ import MKBox from "components/MKBox";
 import MKTypography from "components/MKTypography";
 import MKButton from "components/MKButton";
 import MKInput from "components/MKInput";
-import bgImage from "assets/images/bg-coworking.jpeg";
+import bgImage from "assets/images/account-background.jpg";
 import { useWallet } from "xrpl-connect/context";
 import { useNavigate } from "react-router-dom";
 import MKLoader from "components/MKLoader";
@@ -164,16 +164,18 @@ function Account() {
   }
 
   return (
-    <>
+    <MKBox
+      sx={{
+        display: "flex",
+        flexDirection: "column",
+        minHeight: "100vh",
+      }}
+    >
       <MKBox
-        minHeight={{ xs: "40vh", md: "50vh" }}
+        minHeight="60vh"
         width="100%"
         sx={{
-          backgroundImage: ({ functions: { linearGradient, rgba }, palette: { gradients } }) =>
-            `${linearGradient(
-              rgba(gradients.dark.main, 0.6),
-              rgba(gradients.dark.state, 0.6)
-            )}, url(${bgImage})`,
+          backgroundImage: `url(${bgImage})`,
           backgroundSize: "cover",
           backgroundPosition: "center",
           display: "grid",
@@ -580,7 +582,7 @@ function Account() {
           </MKButton>
         </Card>
       </Modal>
-    </>
+    </MKBox>
   );
 }
 
