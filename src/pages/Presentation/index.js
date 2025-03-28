@@ -39,8 +39,8 @@ function Presentation() {
             backgroundImage: `url(${bgImage})`,
             backgroundSize: "cover",
             backgroundPosition: "center top",
-            filter: "blur(8px)",
-            zIndex: 1,
+            filter: "blur(4px)",
+            zIndex: 0,
           }}
         />
 
