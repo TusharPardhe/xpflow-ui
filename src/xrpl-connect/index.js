@@ -40,11 +40,6 @@ export function WalletConnector({ onSuccess, onError }) {
     if (xrpAddress) {
       handleCloseWalletModal();
       handleCloseQrModal();
-      setNotification({
-        open: true,
-        message: "Successfully connected wallet",
-        severity: "success",
-      });
     }
   }, [xrpAddress]);
 
@@ -91,8 +86,8 @@ export function WalletConnector({ onSuccess, onError }) {
     <MKBox>
       {!xrpAddress ? (
         <MKButton
-          variant="gradient"
-          color="dark"
+          variant="outlined"
+          color="success"
           circular
           onClick={handleOpenWalletModal}
           disabled={isLoading}
