@@ -3,9 +3,8 @@ import Container from "@mui/material/Container";
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import MKBox from "components/MKBox";
-import MKTypography from "components/MKTypography";
 import MKButton from "components/MKButton";
-import bgImage from "assets/images/bg-wallpaper.jpg";
+import bgImage from "assets/images/bg-wallpaper.png";
 import Information from "pages/Presentation/sections/Information";
 import { KeyboardArrowDown } from "@mui/icons-material";
 
@@ -22,29 +21,15 @@ function Presentation() {
     <>
       <MKBox
         position="relative"
+        display="flex"
         minHeight="100vh"
         width="100%"
         sx={{
           overflow: "hidden",
+          backgroundColor: "white",
         }}
       >
-        {/* Blurred Background Layer */}
-        <MKBox
-          sx={{
-            position: "absolute",
-            top: 0,
-            left: 0,
-            right: 0,
-            bottom: 0,
-            backgroundImage: `url(${bgImage})`,
-            backgroundSize: "cover",
-            backgroundPosition: "center top",
-            filter: "blur(4px)",
-            zIndex: 0,
-          }}
-        />
-
-        {/* Content Layer */}
+        {/* Content Layer with Image */}
         <MKBox
           position="absolute"
           zIndex={2}
@@ -57,39 +42,32 @@ function Presentation() {
           }}
         >
           <Container>
-            <Grid container item xs={12} lg={7} justifyContent="center" mx="auto">
-              <MKTypography
-                variant="h1"
-                color="white"
-                mt={-6}
-                mb={1}
-                sx={({ breakpoints, typography: { size } }) => ({
-                  textAlign: "center",
-                  textShadow: "0 2px 4px rgba(0,0,0,0.5)",
-                  [breakpoints.down("md")]: {
-                    fontSize: size["3xl"],
-                  },
-                })}
-              >
-                XPayFlow
-              </MKTypography>
-              <MKTypography
-                variant="body1"
-                color="white"
-                textAlign="center"
-                px={{ xs: 6, lg: 12 }}
-                mt={1}
+            <Grid
+              container
+              item
+              xs={12}
+              lg={7}
+              justifyContent="center"
+              mx="auto"
+              flexDirection="column"
+            >
+              {/* Image with title and subtitle already inside */}
+              <MKBox
+                component="img"
+                src={bgImage}
+                alt="XPayFlow"
                 sx={{
-                  textShadow: "0 1px 3px rgba(0,0,0,0.5)",
+                  maxWidth: "100%",
+                  height: "auto",
+                  display: "block",
+                  margin: "0 auto",
                 }}
-              >
-                An innovative blockchain-based funding and donation platform
-              </MKTypography>
+              />
 
               {/* Scroll Down Arrows */}
               <MKButton
                 variant="text"
-                color="white"
+                color="dark"
                 onClick={scrollToNextSection}
                 sx={{
                   display: "flex",
@@ -111,7 +89,7 @@ function Presentation() {
                     key={index}
                     sx={{
                       fontSize: 40,
-                      color: "white",
+                      color: "dark",
                       opacity: 0.7 - index * 0.2,
                       animation: "bounce 1.5s infinite",
                       animationDelay: `${index * 0.2}s`,
